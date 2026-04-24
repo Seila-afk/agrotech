@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Plantio - Hungreless</title>
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    
+    <style>
+        body {
+            background: #f4f7f4;
+        }
+
+        header {
+            background: #2d7a2d;
+            padding: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .card-simulador {
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .card-simulador:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .resultado {
+            background: #e9f5e9;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        footer {
+            background: #2d7a2d;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌱 Simulador de Plantio</h1>
+    <p>Calcule recursos necessários para sua produção</p>
+</header>
+
+<main class="container mt-5">
+
+    <div class="text-center mb-4">
+        <a href="index.html" class="btn btn-success">
+            ⬅ Voltar ao Início
+        </a>
+    </div>
+
+    <div id="app"></div>
+
+</main>
+
+<footer class="text-center py-3 mt-5">
+    Hungreless
+</footer>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+
+function SimuladorPlantio() {
+
+    const [cultura, setCultura] = React.useState("tomate");
+    const [area, setArea] = React.useState(100);
+    const [clima, setClima] = React.useState("moderado");
+
+    const dados = {
+        tomate: { sementes: 5, agua: 2, tempo: 90 },
+        batata: { sementes: 8, agua: 1.5, tempo: 100 },
+        mandioca: { sementes: 10, agua: 3, tempo: 120 }
+    };
+
+    const fatorClima = {
+        seco: 1.5,
+        moderado: 1,
+        umido: 0.7
+    };
+
+    const sementes = area * dados[cultura].sementes;
+    const agua = area * dados[cultura].agua * fatorClima[clima];
+    const tempo = dados[cultura].tempo;
+
+    return (
+        <div className="card card-simulador p-4 shadow">
+
+            <h3 className="text-center mb-4">Simule seu Plantio 🌾</h3>
+
+            <div className="row">
+
+                <div className="col-md-4 mb-3">
+                    <label>Cultura</label>
+                    <select className="form-select"
+                        value={cultura}
+                        onChange={(e) => setCultura(e.target.value)}>
+                        <option value="tomate">tomate</option>
+                        <option value="batata">batata</option>
+                        <option value="mandioca">mandioca</option>
+                    </select>
+                </div>
+
+                <div className="col-md-4 mb-3">
+                    <label>Área (m²)</label>
+                    <input type="number"
+                        className="form-control"
+                        value={area}
+                        onChange={(e) => setArea(Number(e.target.value))}/>
+                </div>
+
+                <div className="col-md-4 mb-3">
+                    <label>Clima</label>
+                    <select className="form-select"
+                        value={clima}
+                        onChange={(e) => setClima(e.target.value)}>
+                        <option value="seco">Seco</option>
+                        <option value="moderado">Moderado</option>
+                        <option value="umido">Úmido</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div className="resultado mt-4">
+
+                <h5>📊 Resultado</h5>
+
+                <p>🌱 Sementes necessárias:
+                    <strong> {sementes} unidades</strong>
+                </p>
+
+                <p>💧 Água estimada:
+                    <strong> {agua.toFixed(1)} litros</strong>
+                </p>
+
+                <p>⏱️ Tempo de colheita:
+                    <strong> {tempo} dias</strong>
+                </p>
+
+            </div>
+
+        </div>
+    );
+}
+function Usuario() {
+  const [nome, setNome] = React.useState("");
+
+  React.useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (usuario) {
+      setNome(usuario.nome);
+    }
+  }, []);
+
+  if (!nome) return null;
+
+  return (
+    <p style={{
+      position: "fixed",
+      top: "20px",
+      left: "20px",
+      background: "#2d7a2d",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px"
+    }}>
+      👤 {nome}
+    </p>
+  );
+}
+const root = ReactDOM.createRoot(document.getElementById("app"));
+root.render(<SimuladorPlantio />);
+
+</script>
+
+</body>
+</html>
+

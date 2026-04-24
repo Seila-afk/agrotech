@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicas - Hungreless</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+
+    <style>
+        .card-dica {
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .card-dica:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .categoria-badge {
+            font-size: 12px;
+        }
+        #topo {
+            position: fixed;
+            bottom: 70px;
+            right: 25px;
+            background: #2d7a2d;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+}
+    </style>
+</head>
+
+<body>
+
+<header>
+    <img src="img/logoai.jpg" class="logo">
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="tutoriais.html">Tutoriais</a></li>
+            <li><a href="dicas.html" class="ativo">Dicas</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="fale conosco.html">Fale Conosco</a></li>
+            <li><a href="simulador.html">simulador</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+
+        </ul>
+    </nav>
+</header>
+
+<main class="container mt-5 text-center">
+    <h1 class="mb-4">Dicas de Agricultura Sustentável</h1>
+
+    <div id="react-dicas"></div>
+</main>
+
+<footer>
+    <p>Hungreless</p>
+</footer>
+
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+function Usuario() {
+  const [nome, setNome] = React.useState("");
+
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("usuario"));
+    if (user) setNome(user.nome);
+  }, []);
+
+  if (!nome) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      top: "60px",
+      left: "150px",
+      background: "#2d7a2d",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      zIndex: 9999
+    }}>
+      👤 {nome}
+    </div>
+  );
+}
+
+function BotaoTopo() {
+  const [show, setShow] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      console.log(window.scrollY); // debug
+      setShow(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div id="topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+      ↑
+    </div>
+  );
+}
+
+
+function Footer() {
+  return (
+    <footer>
+      <p>Hungreless</p>
+    </footer>
+  );
+}
+
+
+function Protecao({ children }) {
+  const [ok, setOk] = React.useState(false);
+
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("usuario"));
+    if (!user) {
+      window.location.href = "perfil.html";
+    } else {
+      setOk(true);
+    }
+  }, []);
+
+  if (!ok) return null;
+
+  return children;
+}
+
+// 💡 DICAS
+function Dicas() {
+  const [busca, setBusca] = React.useState("");
+  const [categoria, setCategoria] = React.useState("tudo");
+
+  const dicas = [
+    { texto: "Utilize adubos orgânicos para melhorar o solo", categoria: "solo" },
+    { texto: "Faça análise do solo antes de plantar", categoria: "solo" },
+    { texto: "Use cobertura vegetal para proteger o solo", categoria: "solo" },
+    { texto: "Evite o desperdício de água com irrigação por gotejamento", categoria: "agua" },
+    { texto: "Aproveite água da chuva", categoria: "agua" },
+    { texto: "Irrigue no início da manhã ou fim da tarde", categoria: "agua" },
+    { texto: "Faça compostagem com resíduos orgânicos", categoria: "sustentabilidade" },
+    { texto: "Evite queimadas", categoria: "sustentabilidade" },
+    { texto: "Reduza uso de plástico", categoria: "sustentabilidade" },
+    { texto: "Controle pragas com métodos naturais", categoria: "plantio" },
+    { texto: "Faça rotação de culturas", categoria: "plantio" },
+    { texto: "Diversifique suas culturas", categoria: "plantio" }
+  ];
+
+  const filtradas = dicas.filter(d =>
+    (categoria === "tudo" || d.categoria === categoria) &&
+    d.texto.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  function corCategoria(cat) {
+    switch(cat) {
+      case "solo": return "success";
+      case "agua": return "primary";
+      case "sustentabilidade": return "warning";
+      case "plantio": return "dark";
+      default: return "secondary";
+    }
+  }
+
+  return (
+    <>
+      <div className="row justify-content-center mb-4">
+        <div className="col-md-3">
+          <select className="form-select" value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+            <option value="tudo">Todas categorias</option>
+            <option value="solo">Solo</option>
+            <option value="agua">Água</option>
+            <option value="plantio">Plantio</option>
+            <option value="sustentabilidade">Sustentabilidade</option>
+          </select>
+        </div>
+
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar dica..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="row g-4">
+        {filtradas.map((dica, i) => (
+          <div key={i} className="col-md-4">
+            <div className="card card-dica h-100">
+              <div className="card-body">
+
+                <span className={`badge bg-${corCategoria(dica.categoria)} mb-2`}>
+                  {dica.categoria.toUpperCase()}
+                </span>
+
+                <p>{dica.texto}</p>
+
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Protecao>
+      <Usuario />
+      <Dicas />
+      <BotaoTopo />
+    </Protecao>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("react-dicas")).render(<App />);
+</script>
+
+
+
+</body>
+</html>

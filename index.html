@@ -1,0 +1,238 @@
+<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrotech - Início</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/estilo.css">
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+<style>
+.botao-dark {
+  position: fixed;
+  top: 20px;
+  left: 150px;
+  z-index: 9999;
+}
+
+#topo {
+  position: fixed;
+  bottom: 70px;
+  right: 25px;
+  background: #2d7a2d;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+}
+</style>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function Header() {
+  return (
+    <header>
+      <img src="img/logoai.jpg" alt="Logo" className="logo" />
+      <nav>
+        <ul>
+          <li><a href="index.html" className="ativo">Início</a></li>
+          <li><a href="tutoriais.html">Tutoriais</a></li>
+          <li><a href="dicas.html">Dicas</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="fale conosco.html">Fale conosco</a></li>
+          <li><a href="simulador.html">Simulador</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+      </nav>
+    </header>
+  );
+}
+
+
+function Hero() {
+  return (
+    <section id="hero" className="intro">
+      <h1 className="digitando">Agrotech Agricultura Sustentável</h1>
+      <p>Técnicas sustentáveis e econômicas para melhorar sua produção.</p>
+      <a href="tutoriais.html" className="botao">Ver Tutoriais</a>
+    </section>
+  );
+}
+
+function Carousel() {
+  return (
+    <div className="carousel slide my-5" style={{maxWidth:"700px", margin:"auto"}}>
+      <div className="carousel-inner rounded shadow">
+
+        <div className="carousel-item active">
+          <img src="img/platio.jpeg" className="d-block w-100" />
+        </div>
+
+        <div className="carousel-item">
+          <img src="img/milho.jpeg" className="d-block w-100" />
+        </div>
+
+        <div className="carousel-item">
+          <img src="img/compostagem.jpg" className="d-block w-100" />
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+function Logout() {
+  function sair() {
+    localStorage.removeItem("usuario");
+    window.location.href = "perfil.html";
+  }
+
+  return (
+    <button
+      onClick={sair}
+      style={{
+        position: "fixed",
+        top: "140px",
+        right: "20px"
+      }}
+    >
+      Sair
+    </button>
+  );
+}
+function Usuario() {
+  const [nome, setNome] = React.useState("");
+
+  React.useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (usuario) {
+      setNome(usuario.nome);
+    }
+  }, []);
+
+  if (!nome) return null;
+
+  return (
+     <div style={{
+      position: "fixed",
+      top: "60px",
+      left: "150px",
+      background: "#2d7a2d",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      zIndex: 9999
+    }}>
+      👤 {nome}
+    </div>
+  );
+}
+
+
+function DarkMode() {
+  const [dark, setDark] = React.useState(
+    localStorage.getItem("tema") === "dark"
+  );
+
+  React.useEffect(() => {
+    document.body.classList.toggle("dark", dark);
+    localStorage.setItem("tema", dark ? "dark" : "light");
+  }, [dark]);
+
+  return (
+    <button className="botao-dark" onClick={() => setDark(!dark)}>
+      {dark ? "☀️ Claro" : "🌙 Escuro"}
+    </button>
+  );
+}
+
+
+function Alerta() {
+  const [show, setShow] = React.useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShow(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div className="alert alert-success text-center fixed-top">
+      🌿 Bem-vindo ao Hungreless!
+    </div>
+  );
+}
+
+
+function BotaoTopo() {
+  const [show, setShow] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      console.log(window.scrollY); // debug
+      setShow(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div id="topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+      ↑
+    </div>
+  );
+}
+
+
+
+function Footer() {
+  return (
+    <footer>
+      <p>Hungreless</p>
+    </footer>
+  );
+}
+
+// APP
+function App() {
+  return (
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <Carousel />
+      </main>
+      <Footer />
+
+      <Usuario />  {/* 🔥 AQUI */}
+      <DarkMode />
+      <Alerta />
+      <BotaoTopo />
+      <Logout />
+    </>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+
+</body>
+</html>

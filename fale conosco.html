@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contato - AgroTutoriais</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/estilo.css">
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+<style>
+#topo {
+  position: fixed;
+  bottom: 70px;
+  right: 25px;
+  background: #2d7a2d;
+  color: white;
+  padding: 12px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+}
+</style>
+<div id="root"></div>
+
+<script type="text/babel">
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+if (!usuario) {
+  window.location.href = "perfil.html";
+}
+
+
+function Header() {
+  return (
+    <header>
+      <img src="img/logoai.jpg" className="logo" />
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="tutoriais.html">Tutoriais</a></li>
+          <li><a href="dicas.html">Dicas</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="fale conosco.html" className="ativo">Fale conosco</a></li>
+          <li><a href="simulador.html">Simulador</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+      </nav>
+    </header>
+  );
+}
+
+
+function Contato() {
+  const [nome, setNome] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [mensagem, setMensagem] = React.useState("");
+
+  const [erroNome, setErroNome] = React.useState(false);
+  const [erroEmail, setErroEmail] = React.useState(false);
+  const [erroMensagem, setErroMensagem] = React.useState(false);
+
+  function validar(e) {
+    e.preventDefault();
+
+    let valido = true;
+
+   
+    const partes = nome.trim().split(" ");
+    if (partes.length < 2 || partes[0].length < 2 || partes[1].length < 2) {
+      setErroNome(true);
+      valido = false;
+    } else {
+      setErroNome(false);
+    }
+
+    
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email.trim())) {
+      setErroEmail(true);
+      valido = false;
+    } else {
+      setErroEmail(false);
+    }
+
+    
+    if (mensagem.trim() === "" || mensagem.length > 500) {
+      setErroMensagem(true);
+      valido = false;
+    } else {
+      setErroMensagem(false);
+    }
+
+    if (valido) {
+      alert("Mensagem enviada com sucesso! 😊");
+      setNome("");
+      setEmail("");
+      setMensagem("");
+    }
+  }
+
+  return (
+    <main className="container my-5">
+      <h1 className="text-center mb-4">Fale Conosco</h1>
+
+      <form onSubmit={validar} className="shadow p-4 rounded bg-light">
+
+        <div className="mb-3">
+          <label className="form-label">Nome Completo:</label>
+          <input
+            type="text"
+            className={`form-control ${erroNome ? "is-invalid" : ""}`}
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">E-mail:</label>
+          <input
+            type="email"
+            className={`form-control ${erroEmail ? "is-invalid" : ""}`}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Mensagem:</label>
+          <textarea
+            className={`form-control ${erroMensagem ? "is-invalid" : ""}`}
+            maxLength="500"
+            rows="4"
+            value={mensagem}
+            onChange={(e) => setMensagem(e.target.value)}
+          />
+          <small className="text-muted">
+            {mensagem.length} / 500 caracteres
+          </small>
+        </div>
+
+        <button type="submit" className="btn btn-success w-100">
+          Enviar
+        </button>
+
+      </form>
+    </main>
+  );
+}
+
+
+function DarkMode() {
+  const [dark, setDark] = React.useState(
+    localStorage.getItem("tema") === "dark"
+  );
+
+  React.useEffect(() => {
+    document.body.classList.toggle("dark", dark);
+    localStorage.setItem("tema", dark ? "dark" : "light");
+  }, [dark]);
+
+  return (
+    <button className="botao-dark" onClick={() => setDark(!dark)}>
+      {dark ? "☀️ Claro" : "🌙 Escuro"}
+    </button>
+  );
+}
+
+
+function BotaoTopo() {
+  const [show, setShow] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => setShow(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div id="topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+      ↑
+    </div>
+  );
+}
+
+
+function Footer() {
+  return (
+    <footer>
+      <p>Hungreless</p>
+    </footer>
+  );
+}
+
+function Usuario() {
+  const [nome, setNome] = React.useState("");
+
+  React.useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (usuario) {
+      setNome(usuario.nome);
+    }
+  }, []);
+
+  if (!nome) return null;
+
+  return (
+     <div style={{
+      position: "fixed",
+      top: "60px",
+      left: "150px",
+      background: "#2d7a2d",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      zIndex: 9999
+    }}>
+      👤 {nome}
+    </div>
+  );
+}
+function App() {
+  return (
+    <>
+      <Header />
+      <Contato />
+      <Footer />
+      <DarkMode />
+      <BotaoTopo />
+      <Usuario />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+
+</body>
+</html>

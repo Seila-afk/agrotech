@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil do Usuário</title>
+
+<link rel="stylesheet" href="./css/estilo.css">
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+.container {
+  max-width: 300px;
+  margin: 80px auto;
+  text-align: center;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+button {
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function Perfil() {
+  const [nome, setNome] = React.useState("");
+  const [interesse, setInteresse] = React.useState("");
+  const [logado, setLogado] = React.useState(false);
+
+  // Carregar dados salvos
+  React.useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    if (usuario) {
+      setNome(usuario.nome);
+      setInteresse(usuario.interesse);
+      setLogado(true);
+    }
+  }, []);
+
+  // Salvar perfil
+  function salvar() {
+    const dados = { nome, interesse };
+    localStorage.setItem("usuario", JSON.stringify(dados));
+    setLogado(true);
+  }
+
+  // Sair
+  function sair() {
+    localStorage.removeItem("usuario");
+    setNome("");
+    setInteresse("");
+    setLogado(false);
+  }
+function salvar() {
+  const dados = { nome, interesse };
+  localStorage.setItem("usuario", JSON.stringify(dados));
+
+  window.location.href = "index.html"; // 🔥 REDIRECIONA
+}
+  if (logado) {
+    return (
+      <div className="container">
+        <h2>👤 Perfil do Usuário</h2>
+
+        <p><strong>Nome:</strong> {nome}</p>
+        <p><strong>Interesse:</strong> {interesse}</p>
+
+        <p>🌱 Bem-vindo ao sistema!</p>
+
+        <button onClick={sair}>Sair</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <h2>🔐 Criar Perfil</h2>
+
+      <input
+        type="text"
+        placeholder="Digite seu nome"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
+
+      <select
+        value={interesse}
+        onChange={(e) => setInteresse(e.target.value)}
+      >
+        <option value="">Escolha seu interesse</option>
+        <option value="Hortaliças">Hortaliças</option>
+        <option value="Grãos">Grãos</option>
+        <option value="Sustentabilidade">Sustentabilidade</option>
+      </select>
+
+      <button onClick={salvar}>Entrar</button>
+    </div>
+  );
+}
+
+function App() {
+  return <Perfil />;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+
+</body>
+</html>

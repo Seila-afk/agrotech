@@ -1,0 +1,185 @@
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f5fff5;
+    color: #333;
+}
+body.dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark main {
+    background-color: #121212;
+}
+
+body.dark section {
+    background-color: #1a1a1a;
+}
+main {
+    padding: 20px 20px 80px;
+    text-align: center;
+    min-height: 150vh;
+
+}
+
+img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+
+header {
+    background: #2d7a2d;
+    opacity: 0.9;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    height: 100px;
+}
+
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+nav a:hover,
+nav a.ativo {
+    text-decoration: underline;
+}
+
+
+.botao,
+article a {
+    display: inline-block;
+    background: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.25s;
+}
+
+.botao:hover,
+article a:hover {
+    background: #449d48;
+}
+
+article {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 350px;
+    background: #f9f9f9;
+    margin: auto;
+}
+
+
+.tutoriais,
+.intro {
+    display: inline-block;
+    background: #f5f5f5;
+    padding: 40px 50px;
+    border-radius: 60px;
+}
+
+.intro {
+    border-radius: 100px;
+}
+
+
+ul.dicas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+ul.dicas li {
+    background: #fff;
+    padding: 20px 20px 20px 45px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    line-height: 1.6;
+    transition: 0.25s ease;
+    position: relative;
+}
+
+ul.dicas li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(13, 223, 5, 0.15);
+}
+
+ul.dicas li::before {
+    content: "🌱";
+    position: absolute;
+    left: 15px;
+    top: 18px;
+    font-size: 1.2em;
+}
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #2d7a2d;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9em;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    ul.dicas li {
+        font-size: 0.95em;
+    }
+
+    .tutoriais,
+    .intro {
+        padding: 25px;
+        border-radius: 30px;
+    }
+}

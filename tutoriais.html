@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriais - Hungreless</title>
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="css/estilo.css">
+
+    <style>
+        .card-tutorial {
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .card-tutorial:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        #btnTopo {
+            position: fixed;
+            bottom: 70px;
+            right: 25px;
+            background: #2d7a2d;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    
+    <div class="modal fade" id="avisoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Bem-vindo à área de Tutoriais!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Aproveite nossa seleção de técnicas sustentáveis.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        React.useEffect(() => {
+  const el = document.getElementById('avisoModal');
+
+  if (el && window.bootstrap) {
+    const modal = new window.bootstrap.Modal(el);
+    modal.show();
+  }
+}, []);
+    </script>
+
+  
+    <header>
+        <img src="img/logoai.jpg" alt="Logo Hungreless" class="logo">
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="tutoriais.html" class="ativo">Tutoriais</a></li>
+                <li><a href="dicas.html">Dicas</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+                <li><a href="fale conosco.html">Fale Conosco</a></li>
+                <li><a href="simulador.html">simulador</a></li>
+                <li><a href="perfil.html">Perfil</a></li>       
+            </ul>
+        </nav>
+    </header>
+
+    
+    <main class="container text-center mt-4">
+        <h1 class="mb-4">Tutoriais de Agricultura</h1>
+
+       
+        <div id="react-tutoriais"></div>
+    </main>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+   
+    <script type="text/babel">
+
+
+
+function Usuario() {
+  const [nome, setNome] = React.useState("");
+
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("usuario"));
+    if (user) setNome(user.nome);
+  }, []);
+
+  if (!nome) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      top: "60px",
+      left: "150px",
+      background: "#2d7a2d",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      zIndex: 9999
+    }}>
+      👤 {nome}
+    </div>
+  );
+}
+
+function Protecao({ children }) {
+  const [ok, setOk] = React.useState(false);
+
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("usuario"));
+    if (!user) {
+      window.location.href = "perfil.html";
+    } else {
+      setOk(true);
+    }
+  }, []);
+
+  if (!ok) return null;
+
+  return children;
+}
+
+// 💬 COMENTÁRIOS
+function Comentarios({ titulo, comentarios, setComentarios }) {
+  const [texto, setTexto] = React.useState("");
+  const [nome, setNome] = React.useState("");
+
+  function adicionarComentario() {
+    if (!texto.trim() || !nome.trim()) return;
+
+    const novo = {
+      nome,
+      texto,
+      data: new Date().toLocaleString()
+    };
+
+    const novos = {
+      ...comentarios,
+      [titulo]: [...(comentarios[titulo] || []), novo]
+    };
+
+    setComentarios(novos);
+    localStorage.setItem("comentarios", JSON.stringify(novos));
+
+    setTexto("");
+    setNome("");
+  }
+
+  function deletar(index) {
+    const lista = comentarios[titulo] || [];
+    const nova = lista.filter((_, i) => i !== index);
+
+    const novos = { ...comentarios, [titulo]: nova };
+
+    setComentarios(novos);
+    localStorage.setItem("comentarios", JSON.stringify(novos));
+  }
+
+  return (
+    <div className="mt-3 text-start">
+      <input
+        className="form-control mb-2"
+        placeholder="Seu nome..."
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
+
+      <input
+        className="form-control mb-2"
+        placeholder="Comentário..."
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
+      />
+
+      <button className="btn btn-sm btn-success mb-2" onClick={adicionarComentario}>
+        Comentar
+      </button>
+
+      {(comentarios[titulo] || []).map((c, i) => (
+        <div key={i} className="bg-light p-2 rounded mb-2">
+          <strong>{c.nome}</strong>
+          <small className="text-muted ms-2">{c.data}</small>
+          <p className="mb-1">💬 {c.texto}</p>
+
+          <button className="btn btn-sm btn-danger" onClick={() => deletar(i)}>
+            Excluir
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// 📚 TUTORIAIS
+function Tutoriais() {
+  const [busca, setBusca] = React.useState("");
+  const [categoria, setCategoria] = React.useState("tudo");
+  const [mostrarTopo, setMostrarTopo] = React.useState(false);
+
+  const [comentarios, setComentarios] = React.useState(() =>
+    JSON.parse(localStorage.getItem("comentarios")) || {}
+  );
+
+  const tutoriais = [
+    {
+      titulo: "Como plantar milho passo a passo",
+      descricao: "Guia completo desde a semente até a colheita.",
+      categoria: "solo",
+      imagem: "img/milho.jpeg",
+      link: "https://youtu.be/Hs73uAFGQ9k"
+    },
+    {
+      titulo: "Fazendo compostagem natural",
+      descricao: "Transforme resíduos em adubo.",
+      categoria: "compostagem",
+      imagem: "img/Compostagem.jpg",
+      link: "https://youtu.be/9m_vVeMUUXU"
+    },
+    {
+      titulo: "Sistema de irrigação por gotejamento",
+      descricao: "Economize água.",
+      categoria: "irrigacao",
+      imagem: "img/gotejo.jpg",
+      link: "https://youtu.be/8SNch5s6VrY"
+    }
+  ];
+
+  const filtrados = tutoriais.filter(t =>
+    (categoria === "tudo" || t.categoria === categoria) &&
+    t.titulo.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  React.useEffect(() => {
+    const onScroll = () => setMostrarTopo(window.scrollY > 100);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // 🔥 MODAL (AGORA CERTO)
+  React.useEffect(() => {
+    const modal = new bootstrap.Modal(document.getElementById('avisoModal'));
+    modal.show();
+  }, []);
+
+  return (
+    <div>
+
+      <div className="row mb-4 justify-content-center">
+
+        <div className="col-md-3">
+          <select className="form-select" value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+            <option value="tudo">Todas</option>
+            <option value="solo">Solo</option>
+            <option value="compostagem">Compostagem</option>
+            <option value="irrigacao">Irrigação</option>
+          </select>
+        </div>
+
+        <div className="col-md-4">
+          <input
+            className="form-control"
+            placeholder="Buscar..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+        </div>
+
+      </div>
+
+      <div className="row g-4">
+        {filtrados.map((t, i) => (
+          <div key={i} className="col-md-4">
+            <div className="card card-tutorial">
+              <img src={t.imagem} className="card-img-top" />
+              <div className="card-body">
+
+                <h5>{t.titulo}</h5>
+                <p>{t.descricao}</p>
+
+                <a href={t.link} className="btn btn-success mb-2">
+                  Ver tutorial
+                </a>
+
+                <Comentarios
+                  titulo={t.titulo}
+                  comentarios={comentarios}
+                  setComentarios={setComentarios}
+                />
+
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {mostrarTopo && (
+        <button id="btnTopo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          ↑ 
+        </button>
+      )}
+
+    </div>
+  );
+}
+
+// 🧠 APP FINAL
+function App() {
+  return (
+    <Protecao>
+      <Usuario />
+      <Tutoriais />
+    </Protecao>
+  );
+}
+
+function BotaoTopo() {
+  const [show, setShow] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      console.log(window.scrollY); // debug
+      setShow(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div id="topo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+      ↑
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer>
+      <p>Hungreless</p>
+    </footer>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("react-tutoriais")).render(<App />);
+</script>
+<footer>
+      <p>Hungreless</p>
+    </footer>
+</body>
+</html>
