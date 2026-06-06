@@ -8,32 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilo.css">
 
-    <style>
-        .card-dica {
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-
-        .card-dica:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
-
-        .categoria-badge {
-            font-size: 12px;
-        }
-        #topo {
-            position: fixed;
-            bottom: 70px;
-            right: 25px;
-            background: #2d7a2d;
-            color: white;
-            padding: 12px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-}
-    </style>
+    
 </head>
 
 <body>
@@ -79,20 +54,7 @@ function Usuario() {
 
   if (!nome) return null;
 
-  return (
-    <div style={{
-      position: "fixed",
-      top: "60px",
-      left: "150px",
-      background: "#2d7a2d",
-      color: "white",
-      padding: "8px 12px",
-      borderRadius: "8px",
-      zIndex: 9999
-    }}>
-      👤 {nome}
-    </div>
-  );
+  return <div className="user-badge">👤 {nome}</div>;
 }
 
 function BotaoTopo() {

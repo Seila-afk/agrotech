@@ -183,3 +183,331 @@ footer {
         border-radius: 30px;
     }
 }
+
+/* ===============================
+   PERFIL AVANÇADO
+   Todo o visual do perfil.html fica aqui
+   =============================== */
+
+.container-perfil {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: left;
+}
+
+.card-perfil {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+.capa {
+    background: linear-gradient(135deg, #2d7a2d, #61a561);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    background: #e9f5e9;
+}
+
+.form-area {
+    padding: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.container-perfil input,
+.container-perfil select,
+.container-perfil textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.container-perfil textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.container-perfil label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.container-perfil button {
+    padding: 11px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-principal {
+    background: #2d7a2d;
+    color: white;
+    width: 100%;
+}
+
+.btn-principal:hover {
+    background: #256625;
+}
+
+.btn-secundario {
+    background: #e9f5e9;
+    color: #1f5c1f;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-secundario:hover {
+    background: #d7ebd7;
+}
+
+.btn-perigo {
+    background: #b00020;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-perigo:hover {
+    background: #8f001a;
+}
+
+.erro {
+    color: #b00020;
+    font-size: 14px;
+    text-align: center;
+}
+
+.sucesso {
+    color: #2d7a2d;
+    font-size: 14px;
+    text-align: center;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    text-align: left;
+    padding: 20px;
+}
+
+.info-item {
+    background: #f4f7f4;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.bio-box {
+    grid-column: 1 / -1;
+}
+
+body.dark .card-perfil {
+    background: #1f1f1f;
+    color: #e0e0e0;
+}
+
+body.dark .info-item {
+    background: #2a2a2a;
+}
+
+body.dark .container-perfil input,
+body.dark .container-perfil select,
+body.dark .container-perfil textarea {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+@media (max-width: 700px) {
+    .grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container-perfil {
+        margin: 25px auto;
+        padding: 12px;
+    }
+}
+
+
+/* ===============================
+   ESTILOS GERAIS INTEGRADOS DAS PÁGINAS
+   Todo CSS customizado do projeto fica neste arquivo.
+   =============================== */
+
+/* Componentes fixos */
+.botao-dark {
+    position: fixed;
+    top: 20px;
+    left: 150px;
+    z-index: 9999;
+}
+
+#topo,
+#btnTopo {
+    position: fixed;
+    bottom: 70px;
+    right: 25px;
+    background: #2d7a2d;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+    z-index: 9998;
+}
+
+.user-badge {
+    position: fixed;
+    top: 60px;
+    left: 150px;
+    background: #2d7a2d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    z-index: 9999;
+}
+
+.user-badge-simulador {
+    top: 20px;
+    left: 20px;
+}
+
+.btn-logout {
+    position: fixed;
+    top: 140px;
+    right: 20px;
+    z-index: 9999;
+    background: #2d7a2d;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-logout:hover {
+    background: #256625;
+}
+
+/* Página inicial */
+.carousel-home {
+    max-width: 700px;
+    margin: auto;
+}
+
+/* Página de dicas */
+.card-dica {
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card-dica:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.categoria-badge {
+    font-size: 12px;
+}
+
+/* Página de tutoriais */
+.card-tutorial {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card-tutorial:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Página sobre */
+.sobre-img {
+    max-width: 700px;
+}
+
+/* Página simulador */
+.simulador-header {
+    background: #2d7a2d;
+    padding: 15px;
+    color: white;
+    text-align: center;
+    display: block;
+    position: static;
+    box-shadow: none;
+}
+
+.card-simulador {
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.card-simulador:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.resultado {
+    background: #e9f5e9;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.footer-estatico {
+    position: static;
+    background: #2d7a2d;
+    color: white;
+}
+
+body.dark .resultado,
+body.dark .card-dica,
+body.dark .card-tutorial,
+body.dark .bg-light {
+    background: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark .text-muted {
+    color: #bdbdbd !important;
+}
+
+@media (max-width: 700px) {
+    .botao-dark,
+    .user-badge {
+        left: 20px;
+    }
+
+    .user-badge {
+        top: 130px;
+    }
+
+    .btn-logout {
+        top: 180px;
+    }
+}

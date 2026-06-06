@@ -3,127 +3,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfil do Usuário</title>
-
+<title>Perfil Avançado do Usuário</title>
 <link rel="stylesheet" href="./css/estilo.css">
-
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<style>
-.container {
-  max-width: 300px;
-  margin: 80px auto;
-  text-align: center;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  text-align: center;
-}
-
-button {
-  padding: 10px;
-  width: 100%;
-  text-align: center;
-}
-</style>
-
 </head>
-
 <body>
-
 <div id="root"></div>
-
 <script type="text/babel">
+const API_BASE = "http://localhost:5000";
+const FOTO_PADRAO = "https://cdn-icons-png.flaticon.com/512/1995/1995574.png";
 
 function Perfil() {
-  const [nome, setNome] = React.useState("");
-  const [interesse, setInteresse] = React.useState("");
-  const [logado, setLogado] = React.useState(false);
+  const [form, setForm] = React.useState({
+    id: null,
+    nome: "",
+    interesse: "",
+    email: "",
+    cidade: "",
+    estado: "",
+    tipo_producao: "",
+    tamanho_propriedade: "",
+    experiencia: "",
+    foto: "",
+    bio: ""
+  });
 
-  // Carregar dados salvos
+  const [logado, setLogado] = React.useState(false);
+  const [editando, setEditando] = React.useState(false);
+  const [mensagem, setMensagem] = React.useState("");
+  const [erro, setErro] = React.useState("");
+
   React.useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-
     if (usuario) {
-      setNome(usuario.nome);
-      setInteresse(usuario.interesse);
+      setForm(atualizarFormulario(usuario));
       setLogado(true);
     }
   }, []);
 
-  // Salvar perfil
-  function salvar() {
-    const dados = { nome, interesse };
-    localStorage.setItem("usuario", JSON.stringify(dados));
-    setLogado(true);
+  function atualizarFormulario(usuario) {
+    return {
+      id: usuario.id || null,
+      nome: usuario.nome || "",
+      interesse: usuario.interesse || "",
+      email: usuario.email || "",
+      cidade: usuario.cidade || "",
+      estado: usuario.estado || "",
+      tipo_producao: usuario.tipo_producao || "",
+      tamanho_propriedade: usuario.tamanho_propriedade || "",
+      experiencia: usuario.experiencia || "",
+      foto: usuario.foto || "",
+      bio: usuario.bio || ""
+    };
   }
 
-  // Sair
+  function alterar(campo, valor) {
+    setForm({...form, [campo]: valor});
+  }
+
+  function validar() {
+    if (!form.nome.trim() || !form.interesse.trim()) {
+      setErro("Preencha pelo menos seu nome e interesse principal.");
+      return false;
+    }
+
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setErro("Digite um e-mail válido ou deixe o campo vazio.");
+      return false;
+    }
+
+    if (form.tamanho_propriedade && Number(form.tamanho_propriedade) < 0) {
+      setErro("O tamanho da propriedade não pode ser negativo.");
+      return false;
+    }
+
+    return true;
+  }
+
+  async function salvar() {
+    setErro("");
+    setMensagem("");
+
+    if (!validar()) return;
+
+    const dados = {
+      nome: form.nome.trim(),
+      interesse: form.interesse,
+      email: form.email.trim(),
+      cidade: form.cidade.trim(),
+      estado: form.estado.trim(),
+      tipo_producao: form.tipo_producao,
+      tamanho_propriedade: form.tamanho_propriedade ? Number(form.tamanho_propriedade) : null,
+      experiencia: form.experiencia,
+      foto: form.foto.trim(),
+      bio: form.bio.trim()
+    };
+
+    try {
+      const url = form.id ? `${API_BASE}/usuarios/${form.id}` : `${API_BASE}/usuarios`;
+      const metodo = form.id ? "PUT" : "POST";
+
+      const resposta = await fetch(url, {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+      });
+
+      if (!resposta.ok) throw new Error("Erro ao salvar no banco.");
+
+      const usuarioSalvo = await resposta.json();
+      localStorage.setItem("usuario", JSON.stringify(usuarioSalvo));
+      setForm(atualizarFormulario(usuarioSalvo));
+      setLogado(true);
+      setEditando(false);
+      setMensagem("Perfil salvo no banco de dados com sucesso!");
+    } catch (e) {
+      const usuarioLocal = {...dados, id: form.id};
+      localStorage.setItem("usuario", JSON.stringify(usuarioLocal));
+      setForm(atualizarFormulario(usuarioLocal));
+      setLogado(true);
+      setEditando(false);
+      setMensagem("API offline: perfil salvo localmente no navegador.");
+    }
+  }
+
   function sair() {
     localStorage.removeItem("usuario");
-    setNome("");
-    setInteresse("");
     setLogado(false);
+    setEditando(false);
+    setMensagem("");
+    setErro("");
+    setForm(atualizarFormulario({}));
   }
-function salvar() {
-  const dados = { nome, interesse };
-  localStorage.setItem("usuario", JSON.stringify(dados));
 
-  window.location.href = "index.html"; // 🔥 REDIRECIONA
-}
-  if (logado) {
+  function Formulario() {
     return (
-      <div className="container">
-        <h2>👤 Perfil do Usuário</h2>
+      <div className="card-perfil">
+        <div className="capa">
+          <img className="avatar" src={form.foto || FOTO_PADRAO} onError={(e) => e.currentTarget.src = FOTO_PADRAO} />
+          <h2>{logado ? "Editar Perfil Avançado" : "Criar Perfil Avançado"}</h2>
+          <p>Preencha seus dados para personalizar sua experiência no Hungreless.</p>
+        </div>
 
-        <p><strong>Nome:</strong> {nome}</p>
-        <p><strong>Interesse:</strong> {interesse}</p>
+        <div className="form-area">
+          <div className="grid">
+            <div>
+              <label>Nome *</label>
+              <input value={form.nome} onChange={(e) => alterar("nome", e.target.value)} placeholder="Seu nome" />
+            </div>
 
-        <p>🌱 Bem-vindo ao sistema!</p>
+            <div>
+              <label>E-mail</label>
+              <input value={form.email} onChange={(e) => alterar("email", e.target.value)} placeholder="seuemail@email.com" />
+            </div>
 
-        <button onClick={sair}>Sair</button>
+            <div>
+              <label>Interesse principal *</label>
+              <select value={form.interesse} onChange={(e) => alterar("interesse", e.target.value)}>
+                <option value="">Escolha seu interesse</option>
+                <option value="Hortaliças">Hortaliças</option>
+                <option value="Grãos">Grãos</option>
+                <option value="Sustentabilidade">Sustentabilidade</option>
+                <option value="Irrigação">Irrigação</option>
+                <option value="Compostagem">Compostagem</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Tipo de produção</label>
+              <select value={form.tipo_producao} onChange={(e) => alterar("tipo_producao", e.target.value)}>
+                <option value="">Selecione</option>
+                <option value="Familiar">Familiar</option>
+                <option value="Comercial">Comercial</option>
+                <option value="Horta urbana">Horta urbana</option>
+                <option value="Estudo/Pesquisa">Estudo/Pesquisa</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Cidade</label>
+              <input value={form.cidade} onChange={(e) => alterar("cidade", e.target.value)} placeholder="Ex: Cruzeiro" />
+            </div>
+
+            <div>
+              <label>Estado</label>
+              <input value={form.estado} onChange={(e) => alterar("estado", e.target.value)} placeholder="Ex: SP" maxLength="2" />
+            </div>
+
+            <div>
+              <label>Tamanho da propriedade (m²)</label>
+              <input type="number" value={form.tamanho_propriedade || ""} onChange={(e) => alterar("tamanho_propriedade", e.target.value)} placeholder="Ex: 500" />
+            </div>
+
+            <div>
+              <label>Experiência</label>
+              <select value={form.experiencia} onChange={(e) => alterar("experiencia", e.target.value)}>
+                <option value="">Selecione</option>
+                <option value="Iniciante">Iniciante</option>
+                <option value="Intermediário">Intermediário</option>
+                <option value="Avançado">Avançado</option>
+              </select>
+            </div>
+
+            <div className="campo-completo">
+              <label>Foto de perfil (URL)</label>
+              <input value={form.foto} onChange={(e) => alterar("foto", e.target.value)} placeholder="Cole o link de uma imagem" />
+            </div>
+
+            <div className="campo-completo">
+              <label>Bio</label>
+              <textarea value={form.bio} onChange={(e) => alterar("bio", e.target.value)} placeholder="Conte um pouco sobre seu objetivo com agricultura sustentável..." maxLength="300" />
+            </div>
+          </div>
+
+          {erro && <p className="erro">{erro}</p>}
+          {mensagem && <p className="sucesso">{mensagem}</p>}
+
+          <button className="btn-principal" onClick={salvar}>{logado ? "Salvar alterações" : "Entrar"}</button>
+          {logado && <button className="btn-secundario" onClick={() => setEditando(false)}>Cancelar</button>}
+        </div>
+      </div>
+    );
+  }
+
+  function Visualizacao() {
+    return (
+      <div className="card-perfil">
+        <div className="capa">
+          <img className="avatar" src={form.foto || FOTO_PADRAO} onError={(e) => e.currentTarget.src = FOTO_PADRAO} />
+          <h2>{form.nome}</h2>
+          <p>{form.interesse || "Interesse não informado"}</p>
+        </div>
+
+        <div className="info-grid">
+          <div className="info-item"><strong>E-mail:</strong><br />{form.email || "Não informado"}</div>
+          <div className="info-item"><strong>Localização:</strong><br />{form.cidade || "Cidade não informada"}{form.estado ? ` - ${form.estado}` : ""}</div>
+          <div className="info-item"><strong>Tipo de produção:</strong><br />{form.tipo_producao || "Não informado"}</div>
+          <div className="info-item"><strong>Propriedade:</strong><br />{form.tamanho_propriedade ? `${form.tamanho_propriedade} m²` : "Não informado"}</div>
+          <div className="info-item"><strong>Experiência:</strong><br />{form.experiencia || "Não informado"}</div>
+          <div className="info-item"><strong>ID no banco:</strong><br />{form.id || "Salvo localmente"}</div>
+          <div className="info-item bio-box"><strong>Bio:</strong><br />{form.bio || "Nenhuma bio cadastrada."}</div>
+        </div>
+
+        {mensagem && <p className="sucesso">{mensagem}</p>}
+
+        <div className="form-area">
+          <button className="btn-principal" onClick={() => setEditando(true)}>Editar perfil</button>
+          <button className="btn-secundario" onClick={() => window.location.href = "index.html"}>Ir para o site</button>
+          <button className="btn-perigo" onClick={sair}>Sair</button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <h2>🔐 Criar Perfil</h2>
-
-      <input
-        type="text"
-        placeholder="Digite seu nome"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
-
-      <select
-        value={interesse}
-        onChange={(e) => setInteresse(e.target.value)}
-      >
-        <option value="">Escolha seu interesse</option>
-        <option value="Hortaliças">Hortaliças</option>
-        <option value="Grãos">Grãos</option>
-        <option value="Sustentabilidade">Sustentabilidade</option>
-      </select>
-
-      <button onClick={salvar}>Entrar</button>
+    <div className="container-perfil">
+      {!logado || editando ? Formulario() : Visualizacao()}
     </div>
   );
 }
 
-function App() {
-  return <Perfil />;
-}
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
+ReactDOM.createRoot(document.getElementById("root")).render(<Perfil />);
 </script>
-
 </body>
 </html>

@@ -14,19 +14,6 @@
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>
-#topo {
-  position: fixed;
-  bottom: 70px;
-  right: 25px;
-  background: #2d7a2d;
-  color: white;
-  padding: 12px 15px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-}</style>
 <body>
 
     <header>
@@ -62,20 +49,7 @@ function Usuario() {
 
   if (!nome) return null;
 
-  return (
-    <div style={{
-      position: "fixed",
-      top: "60px",
-      left: "150px",
-      background: "#2d7a2d",
-      color: "white",
-      padding: "8px 12px",
-      borderRadius: "8px",
-      zIndex: 9999
-    }}>
-      👤 {nome}
-    </div>
-  );
+  return <div className="user-badge">👤 {nome}</div>;
 }
 
 // 🔐 PROTEÇÃO
@@ -157,8 +131,7 @@ function Sobre() {
       <div className="mt-4">
         <img
           src="img/capa-agricultura-sustentavel copy.jpeg"
-          className="img-fluid rounded shadow"
-          style={{ maxWidth: "700px" }}
+          className="img-fluid rounded shadow sobre-img"
         />
       </div>
 

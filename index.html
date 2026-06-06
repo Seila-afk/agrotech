@@ -14,27 +14,6 @@
 </head>
 
 <body>
-<style>
-.botao-dark {
-  position: fixed;
-  top: 20px;
-  left: 150px;
-  z-index: 9999;
-}
-
-#topo {
-  position: fixed;
-  bottom: 70px;
-  right: 25px;
-  background: #2d7a2d;
-  color: white;
-  padding: 12px 15px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-}
-</style>
 
 <div id="root"></div>
 
@@ -72,7 +51,7 @@ function Hero() {
 
 function Carousel() {
   return (
-    <div className="carousel slide my-5" style={{maxWidth:"700px", margin:"auto"}}>
+    <div className="carousel slide my-5 carousel-home">
       <div className="carousel-inner rounded shadow">
 
         <div className="carousel-item active">
@@ -99,16 +78,7 @@ function Logout() {
   }
 
   return (
-    <button
-      onClick={sair}
-      style={{
-        position: "fixed",
-        top: "140px",
-        right: "20px"
-      }}
-    >
-      Sair
-    </button>
+    <button className="btn-logout" onClick={sair}>Sair</button>
   );
 }
 function Usuario() {
@@ -123,20 +93,7 @@ function Usuario() {
 
   if (!nome) return null;
 
-  return (
-     <div style={{
-      position: "fixed",
-      top: "60px",
-      left: "150px",
-      background: "#2d7a2d",
-      color: "white",
-      padding: "8px 12px",
-      borderRadius: "8px",
-      zIndex: 9999
-    }}>
-      👤 {nome}
-    </div>
-  );
+  return <div className="user-badge">👤 {nome}</div>;
 }
 
 
